@@ -1,0 +1,27 @@
+.errorMessage {color: red;}
+li.selected > a {background: aqua}
+.nav-pills > li > a {
+	border-radius:0;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+	background: #8f979e;
+	border-radius:0;
+}
+
+#invoice-wizard .container ul>li {
+	width: 33%;
+	background: #1a2732;
+	text-align: center;
+}
+
+.required {color: red}
+.select2-container {width: 100% !important;}
+.progress-bar {background: #1a2732}
+.pager .active a {
+	background: #38506b;
+	color: #FFF;
+}
+h3.btn-1 {
+	text-transform: uppercase;
+}
