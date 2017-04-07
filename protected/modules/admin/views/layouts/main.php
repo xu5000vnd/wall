@@ -15,9 +15,16 @@ if($actionName == 'login') :
 <?php else :?>
 
 <body>
-<section id="container" class="">
+<?php 
+	$classToggle = '';
+	if(isset($_SESSION['TOGGLE']) && $_SESSION['TOGGLE'] == 'close') {
+    	$classToggle = 'sidebar-closed';
+	}
+?>
+<section id="container" class="<?php echo $classToggle; ?>">
     <?php include_once 'header.php'; ?>
     <?php include_once 'nav.php'; ?>
+
     <section id="main-content">
         <section class="wrapper">
             <?= $content ?>

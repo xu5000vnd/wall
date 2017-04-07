@@ -48,31 +48,25 @@ class AdminLoginForm extends CFormModel
     */
     public function authenticate($attribute,$params)
     {
-                    // echo "<pre>";
-                    // //print_r($form->errorSummary($model));
-                    // print_r($this->attributes);
-                    // echo "</pre>";die;
         if(!$this->hasErrors())
         {
-
-            
-            $this->_identity = new AdminUserIdentity($this->username,$this->password);
+            $this->_identity = new AdminIdentity($this->username,$this->password);
             $this->_identity->authenticate();
-            
+
             switch($this->_identity->errorCode)
             {
-                case AdminUserIdentity::ERROR_NONE:
+                case AdminIdentity::ERROR_NONE:
                     $duration = $this->rememberMe ? 3600*24*30 : 0; // 30 days
-                    Yii::app()->user->login($this->_identity, $duration);
+                    Yii::app()->admin->login($this->_identity, $duration);
                     break;
 
-                case AdminUserIdentity::ERROR_USERNAME_INVALID:
+                case AdminIdentity::ERROR_USERNAME_INVALID:
                     $this->addError("username","Username is not valid.");
                     break;
-                case AdminUserIdentity::ERROR_USERNAME_BLOCKED:
+                case AdminIdentity::ERROR_USERNAME_BLOCKED:
                     $this->addError("username","Account has been blocked.");
                     break;
-                case AdminUserIdentity::ERROR_PASSWORD_INVALID:
+                case AdminIdentity::ERROR_PASSWORD_INVALID:
                     $this->addError("password","Wrong password");
                     break;
             }

@@ -26,17 +26,18 @@ class SiteController extends AdminController {
             $model = new AdminLoginForm();
             if (isset($_POST['AdminLoginForm'])) {
                 $model->attributes = $_POST['AdminLoginForm'];
-
                 if ($model->validate()) {
-                    //save Log
-                    LogActive::saveLog(LogActive::TYPE_LOGIN, "Logged in");
-                    
-                    if (strtolower(Yii::app()->user->returnUrl)!==strtolower(Yii::app()->baseUrl.'/')){
-                        $this->redirect(Yii::app()->user->returnUrl);
-                    }
 
-                    $this->redirect(Yii::app()->baseUrl);
+                    //for log
+                    $data = [
+                        'data' => 'Logged in.'
+                    ];
 
+                    ActivityLogs::writeLog($data);
+                    //
+
+
+                    $this->redirect(url('admin/site/index'));
                 }
             }
 
@@ -49,12 +50,17 @@ class SiteController extends AdminController {
 
     public function actionLogout() {
         try {
-            if(isset(Yii::app()->user->id)) {
-                //save Log
-                LogActive::saveLog(LogActive::TYPE_LOGIN, 'Logged out');
+            if(Yii::app()->admin->id) {
+                //for log
+                $data = [
+                    'data' => 'Logged in.'
+                ];
+                
+                ActivityLogs::writeLog($data);
+                //
             }
-
-            Yii::app()->user->logout();
+            
+            Yii::app()->admin->logout();
             $this->redirect(url('admin/site/login'));
         } catch (Exception $e) {
             Yii::log("Exception " . print_r($e, true), 'error');

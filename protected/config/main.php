@@ -124,6 +124,12 @@ return array(
             // this is actually the default value
             'loginUrl'=>array('site/login'),
         ),
+        'admin'=>array(
+            'allowAutoLogin' => true,
+            'class' => 'WebAdmin',
+            // this is actually the default value
+            'loginUrl'=>array('admin/site/login'),
+        ),
         'ePdf' => array(
             'class'         => 'ext.yii-pdf.EYiiPdf',
             'params'        => array(

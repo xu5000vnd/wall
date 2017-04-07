@@ -67,16 +67,6 @@ class SettingForm extends CFormModel {
         return $return;
     }
 
-    public function checkPhone($attribute, $params) {
-        if ($this->$attribute != '') {
-            $pattern = '/^[\+]?[\(]?(\+)?(\d{0,3})[\)]?[\s]?[\-]?(\d{0,9})[\s]?[\-]?(\d{0,9})[\s]?[x]?(\d*)$/';
-            $containsDigit = preg_match($pattern, $this->$attribute);
-            $lb = $this->getAttributeLabel($attribute);
-            if (!$containsDigit)
-                $this->addError($attribute, "$lb must be numerical and  allow input (),+,-");
-        }
-    }
-
     /*
      * Austin added date 6/7/2014
      * Override configurations.

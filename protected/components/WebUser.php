@@ -46,6 +46,14 @@ class WebUser extends CWebUser {
     	parent::logout($destroySession);
     }
 
+    /**
+     * @author Lien Son
+     * @todo: Load user model
+     * @param: string 
+     * @return
+     */
+
+
     public function loginRequired() {
         $app = Yii::app();
         $request = $app->getRequest();

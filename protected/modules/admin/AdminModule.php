@@ -28,7 +28,7 @@ class AdminModule extends CWebModule
                 'site/logout',
             );
             
-            if(!isset(Yii::app()->user->id)){
+            if(!isset(Yii::app()->admin->id)){
                  if(isset($_COOKIE[COOKIE_ADMIN])){
                     $data = json_decode($_COOKIE[COOKIE_ADMIN],true);
                     $model=new AdminLoginForm;
@@ -37,11 +37,11 @@ class AdminModule extends CWebModule
                     if(isset($_POST['AdminLoginForm'])) {
                         $model->attributes=$_POST['AdminLoginForm'];
                         if($model->validate()){
-                            if (strtolower(Yii::app()->user->returnUrl)!==strtolower(Yii::app()->baseUrl.'/')) {
-                                Yii::app()->controller->redirect(Yii::app()->user->returnUrl);
+                            if (strtolower(Yii::app()->admin->returnUrl)!==strtolower(Yii::app()->baseUrl.'/')) {
+                                Yii::app()->controller->redirect(Yii::app()->admin->returnUrl);
                             }
 
-                            switch (Yii::app()->user->role_id){
+                            switch (Yii::app()->admin->role_id){
                                 case ROLE_ADMIN:
                                     Yii::app()->controller->redirect(Yii::app()->createAbsoluteUrl('admin/site/index'));
                                 break;
@@ -57,8 +57,9 @@ class AdminModule extends CWebModule
 
                 
            if (!in_array($route, $publicPages))
-               if(!isset (Yii::app()->user->id))
-                   Yii::app()->user->loginRequired();             
+               if(!isset (Yii::app()->admin->id)) {
+                   Yii::app()->admin->loginRequired();             
+               }
 
             return true;
         }

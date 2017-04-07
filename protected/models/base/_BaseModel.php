@@ -24,12 +24,18 @@ class _BaseModel extends CActiveRecord {
                 if (empty($this->created_date))
                     $this->created_date = date('Y-m-d H:i:s');
             }
-        } else {
-            if ($this->hasAttribute('updated_date')) {
-                $this->updated_date = date('Y-m-d H:i:s');
-            }
-            
         }
+
+        if ($this->hasAttribute('created_date')) {
+            if($this->created_date == '0000-00-00 00:00:00') {
+                $this->created_date = date('Y-m-d H:i:s');
+            }
+        }
+
+        if ($this->hasAttribute('updated_date')) {
+            $this->updated_date = date('Y-m-d H:i:s');
+        }
+
         return parent::beforeSave();
     }
 
