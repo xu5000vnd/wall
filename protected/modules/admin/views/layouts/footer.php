@@ -41,6 +41,12 @@
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/select2.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/ckeditor/ckeditor.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/request.js"></script>
+<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/select2.js"></script>
+<!-- switch on off -->
+<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/bootstrap-switch-org.js"></script>
+<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/jquery.datetimepicker.full.js"></script>
+  
+
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/plugin.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/main.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/custom.js"></script>

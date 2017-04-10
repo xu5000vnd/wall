@@ -10,6 +10,8 @@ class _BaseModel extends CActiveRecord {
         TYPE_YES => 'Yes',
         TYPE_NO => 'No',
     );
+
+    public $uploadImageFolder = 'upload/media';
     
 	protected function beforeSave() {
         if (!$this->isNewRecord) {
@@ -41,6 +43,39 @@ class _BaseModel extends CActiveRecord {
 
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+
+    public function saveImage($fieldName) {
+        $uploaded = CUploadedFile::getInstance($this, $fieldName);
+
+        if (array_key_exists($fieldName, $this->attributesBeforeSave))
+            $oldImage = $this->attributesBeforeSave[$fieldName];
+
+        if (is_null($uploaded)) {
+            if (!empty($oldImage)) {
+                $this->$fieldName = $oldImage;
+                $this->update(array($fieldName));
+            }
+            return false;
+        }
+
+        if (!empty($oldImage))
+            $this->deleteImages($oldImage);
+
+        $ext = $uploaded->getExtensionName();
+        $fileName = time() . '_' . $this->id . '_' . StringHelper::stripUnicode($uploaded->getName());
+        $fileName = str_replace('.' . $ext, '.' . strtolower($ext), $fileName);
+        $imageHelper = new ImageHelper();
+        $imageHelper->createDirectoryByPath($this->uploadImageFolder . "/" . $this->id);
+        $uploaded->saveAs($this->uploadImageFolder . '/' . $this->id . '/' . $fileName);
+        $this->$fieldName = $fileName;
+        $this->update(array($fieldName));
+    }
+
+    public function deleteImages($oldImage) {
+        if (!empty($oldImage)) {
+            ImageHelper::deleteFile($this->uploadImageFolder . '/' . $this->id . '/' . $oldImage);
+        }
     }
 
 }

@@ -41,11 +41,11 @@ return array(
     ),
     // application components
     'components' => array(
-        // 'session' => array(
-        //     'autoStart' => true,
-        //     'class' => 'CDbHttpSession',
-        //     'timeout' => 11800,
-        // ),
+        'session' => array(
+            'autoStart' => true,
+            'class' => 'CDbHttpSession',
+            'timeout' => 11800,
+        ),
         'urlManager' => array(
             'urlFormat' => 'path',
             'rules' => array(

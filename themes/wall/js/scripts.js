@@ -54,6 +54,7 @@ function initializeJS() {
     });
 
     jQuery('.toggle-nav').click(function () {
+
         if (jQuery('#sidebar > ul').is(":visible") === true) {
             jQuery('#main-content').css({
                 'margin-left': '0px'
@@ -62,7 +63,19 @@ function initializeJS() {
                 'margin-left': '-180px'
             });
             jQuery('#sidebar > ul').hide();
-            jQuery("#container").addClass("sidebar-closed");
+
+            if($('#container').hasClass('sidebar-closed') == true) {
+                jQuery('#main-content').css({
+                'margin-left': '180px'
+                });
+                jQuery('#sidebar > ul').show();
+                jQuery('#sidebar').css({
+                    'margin-left': '0'
+                });
+                jQuery("#container").removeClass("sidebar-closed");
+            } else {
+                jQuery("#container").addClass("sidebar-closed");
+            }
         } else {
             jQuery('#main-content').css({
                 'margin-left': '180px'

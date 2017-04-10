@@ -15,33 +15,6 @@ $(document).ready(function() {
     loadDataTable();
 });
 
-$('.search-form form').submit(function () {
-    var gridId = 'index-grid';
-    $.fn.yiiGridView.update(gridId, {
-        url: $(this).attr('action'),
-        data: $(this).serialize()
-    });
-    return false;
-});
-
-$('.search-form #clearsearch').click(function () {
-    var id = 'search-form';
-    var inputSelector = '#' + id + ' input, ' + '#' + id + ' select';
-   $(inputSelector).each(function (i, o) {
-        if($(o).attr('type') != 'hidden') {
-            $(o).val('');
-        }
-   });
-    var data = $.param($(inputSelector));
-    var gridId = 'index-grid';
-    $.fn.yiiGridView.update(gridId, {data: data});
-    return false;
-});
-
-$('.select-select2').select2({
-    placeholder: 'Select'
-});
-
 //Validate form
 var formValidator = {
     run: function (_this, event) {
@@ -316,4 +289,9 @@ function validateNumber() {
 $('.datepicker').datetimepicker({
     format: 'YYYY/MM/DD',
     locale: 'en'
+});
+
+$("#status-switch").bootstrapSwitch({
+    'onText': 'Active',
+    'offText': 'Inactive'
 });

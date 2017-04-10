@@ -10,9 +10,12 @@
  * @property string $file_name
  * @property integer $parent_id
  * @property string $created_date
+ * @property integer $status
+ * @property integer $future
  */
 class Category extends _BaseModel {
-		
+    public $uploadImageFolder = 'upload/category';
+	
 	/**
 	 * @return string the associated database table name
 	 */
@@ -29,15 +32,18 @@ class Category extends _BaseModel {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id', 'required'),
-			array('id, parent_id', 'numerical', 'integerOnly'=>true),
+			array('status', 'required', 'on' => 'create, update'),
+			array('name', 'unique', 'on' => 'create, update'),
+			array('future, parent_id', 'numerical', 'integerOnly'=>true),
 			array('name, description, file_name', 'length', 'max'=>45),
 			array('created_date', 'safe'),
-		 ['name', 'required', 'on' => 'create, update'], 
-			['', 'safe'],
+			['name', 'required', 'on' => 'create, update'], 
+			['file_name','file','types'=>'jpg,png,gif', 'allowEmpty'=>false, 'on' => 'create'],
+			['file_name','file','types'=>'jpg,png,gif', 'allowEmpty'=>true, 'on' => 'update'],
+			['future', 'safe'],
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			['id, name, description, file_name, parent_id, created_date', 'safe', 'on'=>'search'],
+			['id, name, description, file_name, parent_id, created_date, status, future', 'safe', 'on'=>'search'],
 		);
 	}
 
@@ -48,9 +54,7 @@ class Category extends _BaseModel {
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		return array(
-	
-																						);
+		return [];
 	}
 
 	/**
@@ -62,8 +66,9 @@ class Category extends _BaseModel {
 			'id' => Yii::t('translation','ID'),
 			'name' => Yii::t('translation','Name'),
 			'description' => Yii::t('translation','Description'),
-			'file_name' => Yii::t('translation','File Name'),
+			'file_name' => Yii::t('translation','Upload'),
 			'parent_id' => Yii::t('translation','Parent'),
+			'status' => Yii::t('translation','Status'),
 			'created_date' => Yii::t('translation','Created Date'),
 		);
 	}
@@ -86,13 +91,14 @@ class Category extends _BaseModel {
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('description',$this->description,true);
-		$criteria->compare('file_name',$this->file_name,true);
-		$criteria->compare('parent_id',$this->parent_id);
-		$criteria->compare('created_date',$this->created_date,true);
-				$sort = new CSort();
+		$criteria->compare('future',$this->future);
+
+		if(!empty($this->parent_id)) {
+			$criteria->compare('parent_id', $this->parent_id);
+		}
+
+		$sort = new CSort();
 
         $sort->attributes = [
 			'*',
@@ -120,7 +126,7 @@ class Category extends _BaseModel {
 		
 		$criteria=new CDbCriteria;
 	
-				$criteria->compare('id',$this->id);
+		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('description',$this->description,true);
 		$criteria->compare('file_name',$this->file_name,true);
@@ -147,13 +153,32 @@ class Category extends _BaseModel {
 	{
 		return parent::model($className);
 	}
-	
-    /**
-    * In case you use displayed order to identify the sequence. Let set this number to create form 
-    *
-    */
-	public function nextOrderNumber()
-	{
-		return Category::model()->count() + 1;
+
+	/**
+	 * @author Lien Son
+	 * @todo: get Parent Cagetory
+	 */
+	public static function getParentCategory() {
+		return CHtml::listData(self::model()->findALl('parent_id = 0'), 'id', 'name');
 	}
+
+	public function getNameParent() {
+		if($this->parent_id) {
+			$parent = self::model()->findByPk($this->parent_id);
+			return $parent ? $parent->name : null;
+		}
+
+		return null;
+	}
+
+
+	public function behaviors() {
+        return array('sluggable' => array(
+            'class' => 'application.extensions.mintao-yii-behavior-sluggable.SluggableBehavior',
+            'columns' => array('name'),
+            'unique' => true,
+            'update' => true,
+        ));
+    }
+
 }

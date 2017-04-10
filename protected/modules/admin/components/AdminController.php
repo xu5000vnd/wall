@@ -1,10 +1,29 @@
 <?php 
 class AdminController extends _BaseController {
-	public $layout = '/layouts/main';
+    public $layout = '/layouts/main';
 
-	public $breadcrumbs = [];
+    public $breadcrumbs = [];
 
-	public function renderBreadcrumbs($title) {
+    public $menu = [];
+
+    public $pluralTitle = '';
+    public $singleTitle = '';
+
+    /*
+     * define for icon
+     *
+     */
+    public $iconList = 'glyphicon glyphicon-th-list';
+    public $iconEdit = 'glyphicon glyphicon-pencil';
+    public $iconCancel = 'glyphicon glyphicon-remove';
+    public $iconSave = 'glyphicon glyphicon-floppy-disk';
+    public $iconCreate = 'glyphicon glyphicon-plus';
+    public $iconDelete = 'glyphicon glyphicon-trash';
+    public $iconSearch = 'glyphicon glyphicon-search';
+    public $iconBack = 'glyphicon glyphicon-arrow-left';
+
+
+    public function renderBreadcrumbs($title) {
         $breadcrumHtml = '';
         $html = '';
         if (isset($this->breadcrumbs)):
@@ -24,6 +43,74 @@ class AdminController extends _BaseController {
                     </div>';
         endif;
         echo $html;
+    }
+
+    public function renderNotifyMessage() {
+        if(Yii::app()->user->hasFlash('success'))
+        {
+            echo '<div class="alert alert-success" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'
+                . Yii::app()->user->getFlash('success') .
+                '</div>';
+        }
+
+        if(Yii::app()->user->hasFlash('error'))
+        {
+            echo '<div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>'
+                . Yii::app()->user->getFlash('error') .
+                '</div>';
+        }
+    }
+
+    public function renderControlNav() {
+
+        //generate action button
+        $htmlNav = '<div class="navbar-right">
+                        <div class="btn-group">';
+        if (is_array($this->menu) && !empty($this->menu)) {
+            foreach ($this->menu as $menuItems) {
+                $addIcon = '';
+                if (strpos(strtolower($menuItems['label']), 'create') !== false)
+                    $addIcon = '<span class="glyphicon glyphicon-plus"></span> ';
+                elseif (strpos(strtolower($menuItems['label']), 'update') !== false)
+                    $addIcon = '<span class="glyphicon glyphicon-pencil"></span> ';
+                elseif (strpos(strtolower($menuItems['label']), 'manage') !== false)
+                    $addIcon = '<span class="glyphicon glyphicon-th-list"></span> ';
+                elseif (strpos(strtolower($menuItems['label']), 'view') !== false)
+                    $addIcon = '<span class="glyphicon glyphicon-list-alt"></span> ';
+                elseif (strpos(strtolower($menuItems['label']), 'delete') !== false)
+                    $addIcon = '<span class="glyphicon glyphicon-trash"></span> ';
+                else
+                {
+                    //Austin in case we put custom icon for button
+                    if (isset($menuItems['icon']))
+                        $addIcon = '<span class="' . $menuItems['icon'] . '"></span> ';
+                }
+
+                //Austin in case we need add more attributes to button tag
+                if (isset($menuItems['htmlOpts']) && is_array($menuItems['htmlOpts'])) //with html options
+                {
+                    if (isset($menuItems['url']) && $menuItems['url'] != '')//link
+                        $htmlNav .= CHtml::link($addIcon . $menuItems['label'], $menuItems['url'], $menuItems['htmlOpts']);
+
+                }
+                else//without html options
+                {
+                    if (isset($menuItems['url']) && $menuItems['url'] != '')//link
+                        $htmlNav .= CHtml::link($addIcon . $menuItems['label'], $menuItems['url'], ['class' => 'btn btn-default']);
+                }
+            }
+        }
+        $htmlNav .= '</div>'
+            . '</div>'
+            . '<input type="hidden" value="' . Yii::app()->createAbsoluteUrl('admin/' . Yii::app()->controller->id . '/deleteall') . '" id="deleteAllAction">'
+            . '<div class="clr"></div>';
+        echo $htmlNav;
+    }
+
+    public function baseControllerIndexUrl() {
+        return Yii::app()->createAbsoluteUrl('admin/' . Yii::app()->controller->id);
     }
 }
 

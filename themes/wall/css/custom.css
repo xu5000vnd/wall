@@ -25,3 +25,5 @@ li.selected > a {background: aqua}
 h3.btn-1 {
 	text-transform: uppercase;
 }
+
+span.required { color:red !important; }

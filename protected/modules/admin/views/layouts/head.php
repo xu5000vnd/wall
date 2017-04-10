@@ -23,6 +23,9 @@
 <link href="<?php echo Yii::app()->theme->baseUrl; ?>/css/style-responsive.css" rel="stylesheet" />
 <link href="<?php echo Yii::app()->theme->baseUrl; ?>/css/xcharts.min.css" rel=" stylesheet">	
 <link href="<?php echo Yii::app()->theme->baseUrl; ?>/css/jquery-ui-1.10.4.min.css" rel="stylesheet">
+<link href="<?php echo Yii::app()->theme->baseUrl; ?>/css/jquery.datetimepicker.css" rel="stylesheet">
+<link href="<?php echo Yii::app()->theme->baseUrl; ?>/css/bootstrap-switch.css" rel="stylesheet">
 <link href="<?php echo Yii::app()->theme->baseUrl; ?>/css/plugin.css" rel="stylesheet">
 <link href="<?php echo Yii::app()->theme->baseUrl; ?>/css/main.css" rel="stylesheet">
 <link href="<?php echo Yii::app()->theme->baseUrl; ?>/css/custom.css" rel="stylesheet">
+
