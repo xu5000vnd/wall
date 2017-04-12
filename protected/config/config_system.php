@@ -11,7 +11,7 @@ define('COOKIE_PASSWORD', md5('password'));
 if (isset($_SERVER['HTTP_HOST']))
 {
     //for local site
-    $MYSQL_HOSTNAME = '127.0.0.1'; //Your hostname here
+    $MYSQL_HOSTNAME = 'localhost'; //Your hostname here
     $MYSQL_USERNAME = 'root'; //Your username here
     $MYSQL_PASSWORD = 'root'; //Your password here
     $MYSQL_DATABASE = 'wall'; //Your database

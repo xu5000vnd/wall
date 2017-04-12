@@ -45,6 +45,8 @@ return array(
             'autoStart' => true,
             'class' => 'CDbHttpSession',
             'timeout' => 11800,
+            'connectionID'=>'db',
+            'autoCreateSessionTable' => false
         ),
         'urlManager' => array(
             'urlFormat' => 'path',

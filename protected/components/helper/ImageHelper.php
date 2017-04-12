@@ -294,7 +294,7 @@ class ImageHelper
                 if(!is_dir($currentPath))
                 {
                     mkdir($currentPath);
-                    chmod($currentPath, 0775); 
+                    chmod($currentPath, 0777); 
                 }
             }
         }
