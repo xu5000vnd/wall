@@ -104,13 +104,90 @@ class AdminController extends _BaseController {
         }
         $htmlNav .= '</div>'
             . '</div>'
-            . '<input type="hidden" value="' . Yii::app()->createAbsoluteUrl('admin/' . Yii::app()->controller->id . '/deleteall') . '" id="deleteAllAction">'
+            . '<input type="hidden" value="' . Yii::app()->createAbsoluteUrl('admin/' . Yii::app()->controller->id . '/deletebulk') . '" id="deleteAllAction">'
             . '<div class="clr"></div>';
         echo $htmlNav;
     }
 
     public function baseControllerIndexUrl() {
         return Yii::app()->createAbsoluteUrl('admin/' . Yii::app()->controller->id);
+    }
+
+    public function loadModel($modelName, $id) {
+        $initModel = new $modelName;
+        $model = $initModel::model()->findByPk($id);
+        if(empty($model)) {
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
+
+        return $model;
+    }
+
+    public function actionDelete($id) {
+        try {
+            if (Yii::app()->request->isPostRequest) { 
+                $modelName = $_GET['model_name'];
+                $model = $this->loadModel($modelName, $id);
+                if($model) {
+                    $model->delete();
+                    Yii::log("Delete record " . print_r($model->attributes, true), 'info');
+
+                    //for log
+                    $data = [
+                        'data' => 'Deleted a ' . $modelName,
+                        'record_id' => $model->id
+                    ];
+
+                    ActivityLogs::writeLog($data);
+                    //
+
+                }
+
+            } else {
+                Yii::log("Invalid request. Please do not repeat this request again.");
+                throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+            }
+        } catch (Exception $e) {
+            Yii::log("Exception " . print_r($e, true), 'error');
+            throw new CHttpException("Exception " . print_r($e, true));
+        }
+    }
+
+
+    public function actionDeleteBulk() {
+        try {
+
+            if (Yii::app()->request->isPostRequest) { 
+                $deleteItems = $_POST['index_grid_c0'];
+                $modelName = Yii::app()->request->getPost('model_name', null);
+                $models = $modelName::model()->findAll('id in (' . implode(',', $deleteItems) . ')');
+
+                foreach ($models as $model) {
+                    $model->delete();
+                }
+
+                Yii::app()->user->setFlash('success', 'Your selected records have been deleted');
+
+                //for log
+                $data = [
+                    'data' => 'Deleted ' . $modelName . " id:" . implode(',', $deleteItems),
+                ];
+
+                ActivityLogs::writeLog($data);
+                //
+
+
+                $this->redirect('index');
+
+            } else {
+                Yii::log("Invalid request. Please do not repeat this request again.");
+                throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+            }
+            
+        } catch (Exception $e) {
+            Yii::log("Exception " . print_r($e, true), 'error');
+            throw new CHttpException("Exception " . print_r($e, true));
+        }
     }
 }
 

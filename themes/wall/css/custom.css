@@ -27,3 +27,7 @@ h3.btn-1 {
 }
 
 span.required { color:red !important; }
+
+div.control-image > img {
+	width: 200px;
+}

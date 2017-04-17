@@ -10,6 +10,7 @@ class SettingForm extends CFormModel {
     const PATH_UPLOAD_FILE = '/upload/settings/';
 
     public $projectName;
+    public $defaultPageSize;
 
     public static $smtpFields = ['host' => 'smtpHost', 'username' => 'smtpUsername', 'password' => 'smtpPassword',
         'port' => 'smtpPort', 'encryption' => 'encryption'];
@@ -28,6 +29,8 @@ class SettingForm extends CFormModel {
             'icon' => '<span class="glyphicon glyphicon-globe"></span>',
             'items' => [
                 ['name' => 'projectName', 'controlTyle' => 'text', 'notes' => '', 'unit' => '', 'htmlOptions' => ['size' => 80], 'rules' => 'required'],
+                ['name' => 'defaultPageSize', 'controlTyle' => 'text', 'notes' => '', 'unit' => '', 'htmlOptions' => ['size' => 80], 'rules' => 'required, numerical'],
+
                 
             ],
         ],

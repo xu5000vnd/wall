@@ -16,11 +16,25 @@
               </a>
               <ul class="sub">
                   <li><a class="" href="#"><i class="icon_document_alt"></i>Invoices</a></li>                          
-                  <li><a class="" href="#"><i class="icon_document_alt"></i>Create Invoice</a></li>
-                  <li><a class="" href="#"><i class="icon_document_alt"></i>Proforma Invoice</a></li>
-                  <li><a class="" href="#"><i class="icon_document_alt"></i>Create Proforma</a></li>
               </ul>
-          </li>       
+          </li>     
+
+          <li class="sub-menu">
+              <a href="<?php echo url('admin/category/index'); ?>" class="">
+                  <i class="icon_cogs"></i>
+                  <span>Category</span>
+                  <span class="menu-arrow arrow_carrot-right"></span>
+              </a>
+          </li>
+
+          <li class="sub-menu">
+              <a href="<?php echo url('admin/image/index'); ?>" class="">
+                  <i class="icon_cogs"></i>
+                  <span>Images</span>
+                  <span class="menu-arrow arrow_carrot-right"></span>
+              </a>
+          </li>
+
           <li class="sub-menu">
               <a href="<?php echo url('admin/setting/index'); ?>" class="">
                   <i class="icon_cogs"></i>

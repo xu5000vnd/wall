@@ -51,6 +51,18 @@
                         <?php echo $form->error($model, 'file_name'); ?>
                     </div>
                 </div>
+
+                <div class='form-group'>
+                    <label class="col-sm-3  col-lg-3 col-xs-12 control-label">&nbsp</label>
+                    <div class="control-image">
+                        <?php
+                            if(!$model->isNewRecord){
+                                echo CHtml::Image($model->getImage('file_name', $model->file_name, ['class' => '']));        
+                            }
+                        ?>
+                        
+                    </div>
+                </div>
                 
                 <div class="clr"></div>
             </div>

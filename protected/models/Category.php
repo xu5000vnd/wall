@@ -54,7 +54,10 @@ class Category extends _BaseModel {
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		return [];
+		return [
+			'rImage' => [self::HAS_MANY, 'Relate', 'one_id', 'condition' => 'rImage.model_one = "' . get_class($this) . '" and rImage.model_many = "Image"' ],
+			'rChildren' => [self::HAS_MANY, 'Category', 'parent_id'],
+		];
 	}
 
 	/**
@@ -110,12 +113,11 @@ class Category extends _BaseModel {
         ];
 		$sort->defaultOrder = 't.id asc';
 					
-		 
 		return new CActiveDataProvider($this, [
 			'criteria'=>$criteria,
                         'sort' => $sort,
 			'pagination'=>[
-                'pageSize'=> Yii::app()->params['defaultPageSize'],
+                'pageSize'=> Yii::app()->setting->getItem('defaultPageSize'),
             ],
 		]);
 	}
@@ -159,7 +161,7 @@ class Category extends _BaseModel {
 	 * @todo: get Parent Cagetory
 	 */
 	public static function getParentCategory() {
-		return CHtml::listData(self::model()->findALl('parent_id = 0'), 'id', 'name');
+		return CHtml::listData(self::model()->findAll('parent_id = 0 and status = ' . STATUS_ACTIVE), 'id', 'name');
 	}
 
 	public function getNameParent() {
@@ -180,5 +182,30 @@ class Category extends _BaseModel {
             'update' => true,
         ));
     }
+
+    protected function beforeDelete() {
+    	if(!empty($this->file_name)) {
+    		$this->deleteImage('file_name');
+    	}
+
+    	if(isset($this->rImage) && count($this->rImage) > 0) {
+    		foreach($this->rImage as $image) {
+    			$image->delete();
+    		}
+    	}
+    	return parent::beforeDelete();
+    }
+
+    public static function getParents() {
+		$criteria = new CDbCriteria;
+		$criteria->compare('t.parent_id', "0");
+		$criteria->compare('t.status', STATUS_ACTIVE);
+		$criteria->order = 't.name ASC';
+
+		return self::model()->findAll($criteria);
+
+    }
+
+    
 
 }

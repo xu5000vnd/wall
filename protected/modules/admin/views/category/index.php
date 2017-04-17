@@ -2,7 +2,7 @@
 $this->breadcrumbs = [$this->pluralTitle];
 $this->menu = [
     ['label' => 'Create ' . $this->singleTitle, 'url' => ['create']],
-    ['label' => 'Bulk Delete', 'url' => ['deleteall'],  'htmlOpts' => ['class' => 'btn btn-default deleteall-button', 'type' => 'button']]
+    ['label' => 'Bulk Delete', 'url' => ['deletebulk'],  'htmlOpts' => ['class' => 'btn btn-default deleteall-button', 'type' => 'button']]
 ];
 $this->renderBreadcrumbs($this->pluralTitle);
 $this->renderPartial('_search', ['model' => $model]);
@@ -53,7 +53,7 @@ $this->renderPartial('_search', ['model' => $model]);
                 [
                     'header' => 'Actions',
                     'class'=>'CButtonColumn',                   
-                    'template' => '{update} {delete} {view}',
+                    'template' => '{update} {delete}',
                     'buttons' => [
                         'update' => [
                             'options' => ['class' => 'btn', 'title' => 'Update'],
@@ -65,12 +65,7 @@ $this->renderPartial('_search', ['model' => $model]);
                             'options' => ['title' => 'Delete'],
                             'label' => '<i class="icon_close_alt2"></i>',
                             'imageUrl' => false,
-                        ],
-
-                        'view' => [
-                            'options' => ['title' => 'View'],
-                            'label' => '<i class="icon_eyes"></i>',
-                            'imageUrl' => false,
+                            'url' => 'url("admin/".Yii::app()->controller->id."/delete",["id"=>$data->id,"model_name"=>get_class($data)])'
                         ],
                     ],
                 ],
@@ -81,6 +76,8 @@ $this->renderPartial('_search', ['model' => $model]);
                 'enableAjaxValidation' => false,
                 'htmlOptions' => ['enctype' => 'multipart/form-data']]);
                 ?>
+
+                <input name="model_name" value="<?php echo get_class($model); ?>" type="hidden" />
 
                 <div class="btn-group-head">
                 <?php

@@ -60,7 +60,7 @@ class _BaseModel extends CActiveRecord {
         }
 
         if (!empty($oldImage))
-            $this->deleteImages($oldImage);
+            $this->deleteImage($oldImage);
 
         $ext = $uploaded->getExtensionName();
         $fileName = time() . '_' . $this->id . '_' . StringHelper::stripUnicode($uploaded->getName());
@@ -72,11 +72,20 @@ class _BaseModel extends CActiveRecord {
         $this->update(array($fieldName));
     }
 
-    public function deleteImages($oldImage) {
+    public function deleteImage($oldImage) {
         if (!empty($oldImage)) {
             ImageHelper::deleteFile($this->uploadImageFolder . '/' . $this->id . '/' . $oldImage);
         }
     }
 
+    public function getImage($field_file = 'file_name') {
+        if(isset($this->$field_file) &&!empty($this->$field_file)) {
+            $path = $this->uploadImageFolder . '/' . $this->id . "/" . $this->$field_file;
+            if (file_exists($path))
+                return Yii::app()->createAbsoluteUrl($path);
+        }
+
+        return null;
+    }
 }
 ?>
