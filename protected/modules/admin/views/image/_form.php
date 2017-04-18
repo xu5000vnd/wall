@@ -8,29 +8,11 @@
                 'enableAjaxValidation' => false,
                 'htmlOptions' => ['class' => 'form-horizontal', 'role' => 'form', 'enctype' => 'multipart/form-data'],
             ]);
-
             ?>
             <div class="col-sm-3 col-lg-3 col-xs-12">
                 <div class='form-group'>
-                    <!-- <ul>
-                        <li>
-                            <a role="button" data-toggle="collapse" href="#Anime" aria-expanded="false" aria-controls="Anime">+</a> <input type="checkbox" id="1"/><label for="1">Anime</label>
-                            <ul class="collapse in" id="Anime">
-                                <li>Naruto</li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            Manga
-                            <ul>
-                                <li>goku</li>
-                                
-                            </ul>
-                        </li>
-
-                    </ul> -->
-
                     <?php echo $model->renderListCheckboxCategory(); ?>
+                    <?php echo $form->error($model, 'arrCategory'); ?>
                 </div>
             </div>
 
@@ -44,12 +26,17 @@
                     </div>
                 </div>
 
-
-
                 <div class='form-group'>
                     <?php echo $form->labelEx($model, 'file_name', ['class' => 'col-sm-3 col-lg-3 col-xs-12 control-label']); ?>
                     <div class="col-sm-9 col-lg-9 col-xs-12">
-                        <?php echo $form->fileField($model, 'file_name', ['multiple' => true]); ?>
+                    <?php 
+                    $this->widget('CMultiFileUpload', array(
+                            'name' => 'file_name',
+                            'accept' => 'jpeg|jpg|gif|png', // useful for verifying files
+                            'duplicate' => 'Duplicate file!', // useful, i think
+                            'denied' => 'Invalid file type', // useful, i think
+                        ));
+                    ?>
                         <?php echo $form->error($model, 'file_name'); ?>
                     </div>
                 </div>

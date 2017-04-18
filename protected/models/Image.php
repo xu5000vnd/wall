@@ -11,6 +11,7 @@
  * @property string $created_date
  */
 class Image extends _BaseModel {
+    public $uploadImageFolder = 'upload/image';
     
     public $category;
     public $arrCategory;
@@ -33,8 +34,8 @@ class Image extends _BaseModel {
             array('name', 'length', 'max'=>100),
             array('file_name', 'length', 'max'=>255),
             array('description, created_date', 'safe'),
-             ['name,arrCategory', 'required', 'on' => 'create, update'], 
-            ['arrCategory', 'safe'],
+            ['name', 'required', 'on' => 'create, update'], 
+            ['arrCategory, files_name, status, views, vote', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             ['id, name, file_name, description, created_date, catetory', 'safe', 'on'=>'search'],
@@ -49,7 +50,9 @@ class Image extends _BaseModel {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'rCategory' => [self::HAS_MANY, 'Relate', 'one_id', 'condition' => 'rCategory.model_one = "' . get_class($this) . '" and rCategory.model_many = "Category"' ],
+            'rCategory' => [self::HAS_MANY, 'Relate', 'one_id', 'condition' => 'rCategory.model_one = "' . __CLASS__ . '" and rCategory.model_many = "Category"' ],
+            'rRelateOne' => [self::HAS_MANY, 'Relate', 'one_id', 'condition' => 'rRelateOne.model_one = "' . __CLASS__ ],
+            'rRelateMany' => [self::HAS_MANY, 'Relate', 'many_id', 'condition' => 'rRelateMany.model_many = "' . __CLASS__ ],
         ];
     }
 
@@ -85,9 +88,7 @@ class Image extends _BaseModel {
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
         $criteria->compare('name',$this->name,true);
-        $criteria->compare('file_name',$this->file_name,true);
         $criteria->compare('description',$this->description,true);
         $criteria->compare('created_date',$this->created_date,true);
                 $sort = new CSort();
@@ -118,9 +119,7 @@ class Image extends _BaseModel {
         
         $criteria=new CDbCriteria;
     
-                $criteria->compare('id',$this->id);
         $criteria->compare('name',$this->name,true);
-        $criteria->compare('file_name',$this->file_name,true);
         $criteria->compare('description',$this->description,true);
         $criteria->compare('created_date',$this->created_date,true);
         $criteria->order = 'id DESC';
@@ -146,12 +145,12 @@ class Image extends _BaseModel {
     }
 
 
-    public function renderImage($fieldName = 'file_name', $imageRoot = false, $w = 100) {
+    public function renderImage($fieldName = 'file_name', $imageRoot = false, $w = 150) {
         if(!empty($this->$fieldName)) {
             if($imageRoot) {
                 return CHtml::Image($this->getImage($fieldName), $this->$fieldName);
             } else {
-                return CHtml::Image($this->getImage($fieldName), $this->$fieldName, ['style' => "width = {$w}px"]);
+                return CHtml::Image($this->getImage($fieldName), $this->$fieldName, ['style' => "width:{$w}px"]);
             }
         }
         return null;
@@ -205,5 +204,13 @@ class Image extends _BaseModel {
 
         echo $html;
 
+    }
+
+    protected function beforeDelete() {
+        if(!empty($this->file_name)) {
+            $this->deleteImage('file_name');
+        }
+
+        return parent::beforeDelete();
     }
 }

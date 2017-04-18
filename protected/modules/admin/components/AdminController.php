@@ -129,8 +129,8 @@ class AdminController extends _BaseController {
                 $modelName = $_GET['model_name'];
                 $model = $this->loadModel($modelName, $id);
                 if($model) {
-                    $model->delete();
-                    Yii::log("Delete record " . print_r($model->attributes, true), 'info');
+
+                    Yii::log("Delete record ", 'info');
 
                     //for log
                     $data = [
@@ -141,6 +141,7 @@ class AdminController extends _BaseController {
                     ActivityLogs::writeLog($data);
                     //
 
+                    $model->delete();
                 }
 
             } else {

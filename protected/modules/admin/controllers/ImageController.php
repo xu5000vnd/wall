@@ -32,29 +32,67 @@ class ImageController extends AdminController {
         try {
             $model = new Image('create');
             $model->status = TYPE_YES;
+            $model->arrCategory = isset($_POST['category']) ? $_POST['category'] : [];
             if(isset($_POST['Image'])) {
                 $model->attributes = $_POST['Image'];
-                if($model->validate()) {
-                    if($model->save()) {
-                        $model->saveImage('file_name');
+                $categories = isset($_POST['category']) ? $_POST['category'] : [];
+                $files = CUploadedFile::getInstancesByName('file_name');
+                
+                        // echo "<pre>";
+                        // //echo $model->getScenario();
+                        // //print_r($form->errorSummary($model));
+                        // print_r($files);
+                        // echo "</pre>";die;
+                
+                $model->validate();
+                if(empty($files)) {
+                    $model->addError('file_name','Upload file Image cannot blank.');
+                }
+
+                if(empty($categories)) {
+                    $model->addError('arrCategory','Category cannot blank.');
+                }
+
+                if(!$model->hasErrors()) {
+                    if(count($files) > 0) {
+                        foreach ($files as $i => $file) {
+                            $imageNew = new Image('create');
+                            $imageNew->attributes = $model->attributes;
+                            if($imageNew->save()) {
+
+                                //save one-many
+                                $dRelate = [
+                                    'one_id' => $imageNew->id,
+                                    'many_id' => $categories,
+                                    'model_one' => get_class($imageNew),
+                                    'model_many' => Relate::NAME_CATEGORY,
+                                ];
+                                Relate::saveRelate($dRelate);
+                                //
+
+
+                                //for log
+                                $data = [
+                                    'data' => 'Created a Image',
+                                    'record_id' => $imageNew->id
+                                ];
+
+                                ActivityLogs::writeLog($data);
+                                //
+                                $imageNew->saveImage('file_name', $files[$i]);
+                            }
+
+                        }
 
                         Yii::app()->user->setFlash('success', $this->singleTitle . ' has been created');
 
-                        //for log
-                        $data = [
-                            'data' => 'Created a Image',
-                            'record_id' => $model->id
-                        ];
+                        $this->redirect(url('admin/image/create'));
 
-                        ActivityLogs::writeLog($data);
-                        //
-
-                        $this->redirect(url('admin/image/index'));
                     } else {
-                        Yii::app()->user->setFlash('error', $this->singleTitle . ' cannot be created for some reasons');
+                        Yii::app()->user->setFlash('error', 'Upload file Image cannot blank.');
                     }
                 } else {
-                    Yii::app()->user->setFlash('error', $this->singleTitle . ' has been created');
+                    Yii::app()->user->setFlash('error', $this->singleTitle . ' cannot be created for some reasons');
                 }
             }
 

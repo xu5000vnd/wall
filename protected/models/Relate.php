@@ -12,7 +12,10 @@
  * @property string $created_date
  */
 class Relate extends _BaseModel {
-		
+	
+	const NAME_CATEGORY = 'Category';
+	const NAME_IMAGE = 'Image';
+	const NAME_TAG = 'Tag';
 	/**
 	 * @return string the associated database table name
 	 */
@@ -32,7 +35,7 @@ class Relate extends _BaseModel {
 			array('one_id, many_id', 'numerical', 'integerOnly'=>true),
 			array('model_one, model_many', 'length', 'max'=>200),
 			array('created_date', 'safe'),
-			['', 'safe'],
+			['one_id, many_id, model_one, model_many, created_date', 'safe'],
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			['id, one_id, many_id, model_one, model_many, created_date', 'safe', 'on'=>'search'],
@@ -46,9 +49,7 @@ class Relate extends _BaseModel {
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		return array(
-	
-																						);
+		return []; 
 	}
 
 	/**
@@ -66,74 +67,6 @@ class Relate extends _BaseModel {
 		);
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id);
-		$criteria->compare('one_id',$this->one_id);
-		$criteria->compare('many_id',$this->many_id);
-		$criteria->compare('model_one',$this->model_one,true);
-		$criteria->compare('model_many',$this->model_many,true);
-		$criteria->compare('created_date',$this->created_date,true);
-				$sort = new CSort();
-
-        $sort->attributes = [
-			'*',
-            'name' => [
-                'asc' => 't.id',
-                'desc' => 't.id desc',
-                'default' => 'asc',
-            ],
-        ];
-		$sort->defaultOrder = 't.id asc';
-					
-		 
-		return new CActiveDataProvider($this, [
-			'criteria'=>$criteria,
-                        'sort' => $sort,
-			'pagination'=>[
-                'pageSize'=> Yii::app()->params['defaultPageSize'],
-            ],
-		]);
-	}
-
-	public function searchExport()
-	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-		
-		$criteria=new CDbCriteria;
-	
-				$criteria->compare('id',$this->id);
-		$criteria->compare('one_id',$this->one_id);
-		$criteria->compare('many_id',$this->many_id);
-		$criteria->compare('model_one',$this->model_one,true);
-		$criteria->compare('model_many',$this->model_many,true);
-		$criteria->compare('created_date',$this->created_date,true);
-		$criteria->order = 'id DESC';
-		$model = self::model()->findAll($criteria);
-	
-		if($model){
-			return $model;
-		}
-		return ;
-	}
-
-	
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -145,13 +78,51 @@ class Relate extends _BaseModel {
 	{
 		return parent::model($className);
 	}
-	
-    /**
-    * In case you use displayed order to identify the sequence. Let set this number to create form 
-    *
-    */
-	public function nextOrderNumber()
-	{
-		return Relate::model()->count() + 1;
+
+	/**
+	 * @author Lien Son
+	 * @todo: save Relate
+	 */
+	public static function saveRelate($data = []) {
+		if(is_array($data) && !empty($data)) {
+			$one_id = isset($data['one_id']) ? $data['one_id'] : 0;
+			$many_id = isset($data['many_id']) ? $data['many_id'] : [];
+			$model_one = isset($data['model_one']) ? $data['model_one'] : 0;
+			$model_many = isset($data['model_many']) ? $data['model_many'] : 0;
+
+			if(is_array($many_id) && count($many_id) > 0) {
+				Relate::deleteOldData($one_id, $model_one, $model_many);
+				foreach ($many_id as $mId) {
+					$model = new Relate();
+					$model->one_id = $one_id;
+					$model->many_id = $mId;
+					$model->model_one = $model_one;
+					$model->model_many = $model_many;
+					$model->save();
+				}
+			}
+		}
 	}
+
+	/**
+	 * @author Lien Son
+	 * @todo: delete old data
+	 */
+	public static function deleteOldData($one_id, $model_one, $model_many) {
+		if(empty($one_id) || empty($model_one) || empty($model_many)) {
+			return false;
+		}
+
+		$criteria = new CDbCriteria();
+		$criteria->compare('t.one_id', $one_id);
+		$criteria->compare('t.model_one', $model_one);
+		$criteria->compare('t.model_many', $model_many);
+		$models = self::model()->findAll($criteria);
+		if($models) {
+			foreach ($models as $model) {
+				$model->delete();
+			}
+		}
+	}
+	
 }

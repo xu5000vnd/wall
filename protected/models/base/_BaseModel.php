@@ -45,8 +45,12 @@ class _BaseModel extends CActiveRecord {
         return parent::model($className);
     }
 
-    public function saveImage($fieldName) {
+    public function saveImage($fieldName, $object = null) {
         $uploaded = CUploadedFile::getInstance($this, $fieldName);
+
+        if(!empty($object)) {
+            $uploaded = $object;
+        }
 
         if (array_key_exists($fieldName, $this->attributesBeforeSave))
             $oldImage = $this->attributesBeforeSave[$fieldName];
@@ -59,8 +63,8 @@ class _BaseModel extends CActiveRecord {
             return false;
         }
 
-        if (!empty($oldImage))
-            $this->deleteImage($oldImage);
+        // if (!empty($oldImage))
+        //     $this->deleteImage($oldImage);
 
         $ext = $uploaded->getExtensionName();
         $fileName = time() . '_' . $this->id . '_' . StringHelper::stripUnicode($uploaded->getName());
@@ -81,11 +85,35 @@ class _BaseModel extends CActiveRecord {
     public function getImage($field_file = 'file_name') {
         if(isset($this->$field_file) &&!empty($this->$field_file)) {
             $path = $this->uploadImageFolder . '/' . $this->id . "/" . $this->$field_file;
-            if (file_exists($path))
-                return Yii::app()->createAbsoluteUrl($path);
+            return Yii::app()->createAbsoluteUrl($path);
         }
 
         return null;
+    }
+
+    protected function beforeDelete() {
+        //check and delete relate
+        // if(isset($this->rRelateOne) && !empty($this->rRelateOne)) {
+        //     foreach ($this->rRelateOne as $record) {
+        //         $record->delete();
+        //     }
+        // }
+
+        // if(isset($this->rRelateMany) && !empty($this->rRelateMany)) {
+        //     foreach ($this->rRelateMany as $record) {
+        //         $record->delete();
+        //     }
+        // }
+
+        return parent::beforeDelete();
+    }
+
+    public function getArrIdByRelate($relName) {
+        if(isset($this->$relName) && is_array($this->$relName)) {
+            return array_keys(CHtml::getData($this->$relName, 'id','id'));
+        }
+
+        return isset($this->$relName) ? $this->{$relName}->id : null;
     }
 }
 ?>
