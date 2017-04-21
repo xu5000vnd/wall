@@ -37,13 +37,7 @@ class ImageController extends AdminController {
                 $model->attributes = $_POST['Image'];
                 $categories = isset($_POST['category']) ? $_POST['category'] : [];
                 $files = CUploadedFile::getInstancesByName('file_name');
-                
-                        // echo "<pre>";
-                        // //echo $model->getScenario();
-                        // //print_r($form->errorSummary($model));
-                        // print_r($files);
-                        // echo "</pre>";die;
-                
+
                 $model->validate();
                 if(empty($files)) {
                     $model->addError('file_name','Upload file Image cannot blank.');
