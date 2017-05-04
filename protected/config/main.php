@@ -25,6 +25,7 @@ return array(
         'application.components.BaseFormatter',
         'application.components.helper.*',
         'application.components.smtp.*',
+        'application.extensions.EPhpThumb.*',
     ),
     'modules' => array(
         'gii' => array(
@@ -37,7 +38,14 @@ return array(
             ),
         ),
         'admin',
-        'member'
+        'member',
+        'api' => array(
+            'connectionString' => 'mysql:dbname='.$MYSQL_DATABASE.';host='.$MYSQL_HOSTNAME,
+            'host' => $MYSQL_HOSTNAME,
+            'dbName' => $MYSQL_DATABASE,
+            'username' => $MYSQL_USERNAME,
+            'password' => $MYSQL_PASSWORD,
+        ),
     ),
     // application components
     'components' => array(

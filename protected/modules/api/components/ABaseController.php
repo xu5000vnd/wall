@@ -148,13 +148,23 @@ class ABaseController extends CController {
      * @param object $model
      * @todo parse data
      */
-    public function parseData($model) {
+    public function parseData($model, $needData = []) {
         $data = [];
         //do something before parse data
         $this->beforeParseData($data, $model);
 
-        //do load main data
-        $data = $model->attributes;
+        if(empty($needData)) {
+            //do load main data
+            $data = $model->attributes;
+        } else {
+            if(is_array($needData)) {
+                foreach ($needData as $value) {
+                    if($model->hasAttribute($value)) {
+                        $data[] = $model->$value;
+                    }
+                }
+            }
+        }
 
         //do something parse parse data
         $this->afterParseData($data, $model);
@@ -191,6 +201,10 @@ class ABaseController extends CController {
         //get files upload if has
         // $this->getFileUpload($data, $model);
 
+        if($model->hasAttribute('file_name')) {
+            $data['url_image'] =  ImageHelper::getImageUrlBySize($model, 'file_name', '350x300');
+            $data['full_image'] =  ImageHelper::getImageUrlBySize($model, 'file_name','',true);
+        }
         //...do more
     }
 
@@ -218,15 +232,4 @@ class ABaseController extends CController {
         $this->response->send();
     }
 
-    /**
-     * @author Horison <xu5000vnd@gmail.com>
-     * @param string $msg
-     * @return void
-     * @todo send bad request
-     */
-    public function sendBadRequest($msg = 'Bad request.') {
-        $this->response->errorCode = AConstants::HTTP_STATUS_400;
-        $this->response->description = $msg;
-        $this->response->send();
-    }
 }

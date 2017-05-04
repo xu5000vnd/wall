@@ -9,6 +9,9 @@
 class ImageHelper
 {
     public $folder = 'upload';
+
+    const FOLDER_CACHE = 'cache';
+
     public $file = '';
     public $thumbs = array();
     public $createFullImage = false;//true if you need to create full size image after resize
@@ -344,11 +347,11 @@ class ImageHelper
 							// $model->resizeImage($fieldName);
 						if (file_exists($image))
 							return Yii::app()->createAbsoluteUrl($image);
-                        else if(file_exists($rootImage)) 
+            else if(file_exists($rootImage)) 
     						return Yii::app()->createAbsoluteUrl($rootImage);
-                        else
-                            return $baseNoneImage . $item['size'];
-                    }
+            else
+                return $baseNoneImage . $item['size'];
+          }
 				}
 			}
 		}
@@ -473,6 +476,71 @@ class ImageHelper
       $fp = fopen($imageTo, "w");
       fwrite($fp, $content);
       fclose($fp);
+  }
+
+  /**
+   * @author Lien Son
+   * @todo: render image width x height
+   * @param: string 
+   * @return: link image
+   */
+  public static function getImageUrlBySize($model, $fieldName, $size = '200x200', $root = false) {
+      if ($model && $model->$fieldName != "") {
+          $rootImage = $model->uploadImageFolder . '/' . $model->id . '/' . $model->$fieldName;
+
+          if (file_exists($rootImage)) {
+              if($root) {
+                return Yii::app()->createAbsoluteUrl($rootImage);
+              }
+
+              $seperateImg = self::seperateImage($model->$fieldName);
+              $extensionImg = $seperateImg[1];
+              $nameImg = $seperateImg[0];
+              $newName = $nameImg . "___" . $size . "." . $extensionImg;
+
+              $image = self::FOLDER_CACHE . "/" . get_class($model) . "/" . $model->id ."/".$newName;
+
+              if (!file_exists($image)) {
+                  $width = explode('x', $size)[0];
+                  $height = explode('x', $size)[1];
+
+                    self::createDirectoryByPath(self::FOLDER_CACHE . "/" . get_class($model) . "/" . $model->id);
+
+                  $pathFile = $rootImage;
+                  $thumb = new EPhpThumb();
+                  $thumb->init();
+                  $thumb->create($pathFile)
+                      ->resize($width, 0)
+                      ->save($image);
+
+                  //create full image
+                  $createFullImage = $model->createFullImage;
+                  if ($createFullImage) {
+                      $source_folder = $image = self::FOLDER_CACHE . "/" . get_class($model) . "/" . $model->id;
+                      echo self::createFullImage($source_folder, $newName, $width, $height);
+                  }
+              }
+              return Yii::app()->createAbsoluteUrl($image);
+          }
+      }
+
+      return null;
+  }
+
+  /**
+   * @author Lien Son
+   * @todo: seperate name and extension
+   * @param: string name image
+   * @return array data
+   */
+  public static function seperateImage($image) {
+      $countImgElement = count(explode('.', $image));
+      $extensionImg = explode('.', $image)[$countImgElement - 1];
+      $nameImg = substr($image, 0, -strlen("." . $extensionImg));
+      $data[] = $nameImg;
+      $data[] = $extensionImg;
+
+      return $data;
   }
 
 }

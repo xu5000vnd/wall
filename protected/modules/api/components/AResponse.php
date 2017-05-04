@@ -22,8 +22,23 @@ class AResponse {
     	$this->beforeSend();
     	$this->setHeader();
 
-    	$res = [];
-    	echo CJSON::encode($res);
+        if ($this->errorCode == AConstants::HTTP_STATUS_200 || $this->errorCode == AConstants::HTTP_STATUS_201) {
+            // $res = [
+            //     'status' => isset(AConstants::$ARR_RES_STATUS[AConstants::STATUS_SUCCESS]) ? AConstants::$ARR_RES_STATUS[AConstants::STATUS_SUCCESS] : 'Unknown',
+            //     'data' => $this->data,
+            // ];
+            $res = $this->data;
+        } else {
+            $res = [
+                'status' => isset(AConstants::$ARR_RES_STATUS[AConstants::STATUS_ERROR]) ? AConstants::$ARR_RES_STATUS[AConstants::STATUS_ERROR] : 'Unknown',
+                'errorCode' => $this->errorCode,
+                'message' => !empty($this->message) ? $this->message : $this->getHttpStatusMessage(),
+                'description' => !empty($this->description) ? $this->description : $this->getHttpStatusMessage()
+            ];
+        }
+
+        
+        echo CJSON::encode($res);
         Yii::app()->end();
 
     }
@@ -44,6 +59,9 @@ class AResponse {
     	$statusHeader = 'HTTP/1.1 ' . $this->errorCode . ' ' . $this->getHttpStatusMessage();
         header($statusHeader);
         header('Content-type: ' . $this->getContentType());
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-Auth-Token, X-CSRF-TOKEN');
     }
 
     /**

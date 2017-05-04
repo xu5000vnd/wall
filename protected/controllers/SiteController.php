@@ -70,4 +70,9 @@ class SiteController extends _BaseController
         
         $this->render('log_active', ['model' => $model]);
     }
+
+    public function actionTestapi() {
+        $this->layout=false;
+        $this->render('testapi');
+    }
 }

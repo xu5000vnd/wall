@@ -11,6 +11,8 @@ class _BaseModel extends CActiveRecord {
         TYPE_NO => 'No',
     );
 
+    public $createFullImage = true;
+
     public $uploadImageFolder = 'upload/media';
     
 	protected function beforeSave() {

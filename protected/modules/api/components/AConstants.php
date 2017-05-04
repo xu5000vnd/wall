@@ -10,6 +10,9 @@ class AConstants {
 
     const STATUS_SUCCESS = 1;
     const STATUS_ERROR = 0;
+
+    const SUCCESS = 'success';
+    const ERROR = 'error';
     
     const HTTP_STATUS_100 = 100;
     const HTTP_STATUS_200 = 200;

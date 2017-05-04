@@ -2,6 +2,12 @@
 
 class ApiModule extends CWebModule
 {
+	public $connectionString;
+    public $host;
+    public $dbName;
+    public $username;
+    public $password;
+
     public function init()
     {                       
         // this method is called when the module is being created

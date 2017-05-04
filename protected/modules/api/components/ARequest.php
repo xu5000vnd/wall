@@ -46,11 +46,11 @@ class ARequest {
 	 * @todo: get param
 	 * @param: string 
 	 */
-	public function getParam($key) {
+	public function getParam($key, $valueDefault = null) {
 		if (array_key_exists($key, $this->params)) {
 			return $this->params[$key];
 		}
-		return null;
+		return $valueDefault;
 	}
 
     /**
