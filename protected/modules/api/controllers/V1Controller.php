@@ -2,6 +2,12 @@
 class V1Controller extends ABaseController {
 
     public function actionList(){
+        // header('Content-type: application/json');
+        // header('Access-Control-Allow-Origin: *');
+        // header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        // header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, X-Auth-Token, X-CSRF-TOKEN');
+        // echo CJSON::encode(['status'=>'error']);
+        // die;
         $modelName = $this->getModelName('list');
         $rows = [];
         $limit = AConstants::DEFAULT_PAGING;
@@ -9,7 +15,6 @@ class V1Controller extends ABaseController {
 
         $c = new CDbCriteria();
         $this->setConditions($c, $modelName);
-
 
         $nextPage = '';
         if($page == 'all') {
