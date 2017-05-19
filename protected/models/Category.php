@@ -38,8 +38,8 @@ class Category extends _BaseModel {
             array('name, description, file_name', 'length', 'max'=>45),
             array('created_date', 'safe'),
             ['name', 'required', 'on' => 'create, update'], 
-            ['file_name','file','types'=>'jpg,png,gif', 'allowEmpty'=>false, 'on' => 'create'],
-            ['file_name','file','types'=>'jpg,png,gif', 'allowEmpty'=>true, 'on' => 'update'],
+            // ['file_name','file','types'=>'jpg,png,gif', 'allowEmpty'=>false, 'on' => 'create'],
+            // ['file_name','file','types'=>'jpg,png,gif', 'allowEmpty'=>true, 'on' => 'update'],
             ['future', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.

@@ -55,7 +55,7 @@ class CategoryController extends AdminController {
                         Yii::app()->user->setFlash('error', $this->singleTitle . ' cannot be created for some reasons');
                     }
                 } else {
-                    Yii::app()->user->setFlash('error', $this->singleTitle . ' has been created');
+                    Yii::app()->user->setFlash('error', $this->singleTitle . ' cannot be created for some reasons');
                 }
             }
 
