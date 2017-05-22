@@ -55,7 +55,7 @@ class Category extends _BaseModel {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return [
-            'rImage' => [self::HAS_MANY, 'Relate', 'one_id', 'condition' => 'rImage.model_one = "' . __CLASS__ . '" and rImage.model_many = "Image"' ],
+            'rImage' => [self::HAS_MANY, 'Relate', 'one_id', 'condition' => 'rImage.model_many = "' . __CLASS__ . '" and rImage.model_one = "Image"' ],
             'rChildren' => [self::HAS_MANY, 'Category', 'parent_id'],
             'rRelateOne' => [self::HAS_MANY, 'Relate', 'one_id', 'condition' => 'rRelateOne.model_one = "' . __CLASS__ ],
             'rRelateMany' => [self::HAS_MANY, 'Relate', 'many_id', 'condition' => 'rRelateOne.model_many = "' . __CLASS__ ],

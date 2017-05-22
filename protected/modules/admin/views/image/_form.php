@@ -18,13 +18,6 @@
 
             <div class="col-sm-6 col-lg-6 col-xs-12">
                 
-                <div class='form-group'>
-                    <?php echo $form->labelEx($model, 'name', ['class' => 'col-sm-3 col-lg-3 col-xs-12 control-label']); ?>
-                    <div class="col-sm-9 col-lg-9 col-xs-12">
-                        <?php echo $form->textField($model, 'name', ['class' => 'form-control', 'maxlength' => 255]); ?>
-                        <?php echo $form->error($model, 'name'); ?>
-                    </div>
-                </div>
 
                 <div class='form-group'>
                     <?php echo $form->labelEx($model, 'file_name', ['class' => 'col-sm-3 col-lg-3 col-xs-12 control-label']); ?>

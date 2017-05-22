@@ -34,7 +34,6 @@ class Image extends _BaseModel {
             array('name', 'length', 'max'=>100),
             array('file_name', 'length', 'max'=>255),
             array('description, created_date', 'safe'),
-            ['name', 'required', 'on' => 'create, update'], 
             ['arrCategory, files_name, status, views, vote', 'safe'],
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -108,7 +107,7 @@ class Image extends _BaseModel {
             'criteria'=>$criteria,
                         'sort' => $sort,
             'pagination'=>[
-                'pageSize'=> Yii::app()->params['defaultPageSize'],
+                'pageSize'=> 50,
             ],
         ]);
     }
@@ -161,6 +160,7 @@ class Image extends _BaseModel {
         if(!empty($this->arrCategory)) {
             $listChecked = $this->arrCategory;
         }
+        
         $html = '';
         $parents = Category::getParents();
         if(count($parents) > 0) {
@@ -212,5 +212,40 @@ class Image extends _BaseModel {
         }
 
         return parent::beforeDelete();
+    }
+
+    protected function beforeSave() {
+        if($this->isNewRecord) {
+            $this->name = (time()*rand(1,9999999));
+        }
+
+        return parent::beforeSave();
+    }
+
+    public static function getImagesThisMonth() {
+        $sql = 'select count(*) as total,DATE(created_date) as date  from wall_image
+        where MONTH(created_date) = MONTH(CURRENT_DATE())
+        GROUP BY CAST(created_date AS date)';
+        return Yii::app()->db->createCommand($sql)->queryAll();
+    } 
+
+    public static function getTotalImagesToday() {
+        $sql = 'select count(*) as total  from wall_image
+        where DATE(created_date) = CURRENT_DATE()
+        GROUP BY CAST(created_date AS date)';
+        $query = Yii::app()->db->createCommand($sql)->queryRow();
+
+        if(!empty($query)) {
+            return $query['total'];
+        }
+
+        return 0;
+    }
+
+    public function getListCategory() {
+        if(!empty($this->rCategory)) {
+            return array_keys(CHtml::listData($this->rCategory, 'many_id', 'many_id'));
+        }
+        return [];
     }
 }

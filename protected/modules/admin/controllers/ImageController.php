@@ -100,6 +100,7 @@ class ImageController extends AdminController {
     public function actionUpdate($id) {
         try {
             $model = $this->loadModel('Image', $id);
+            $model->arrCategory = isset($_POST['category']) ? $_POST['category'] : $model->getListCategory();
             if(isset($_POST['Image'])) {
                 $model->attributes = $_POST['Image'];
                 if($model->validate()) {

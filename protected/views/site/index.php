@@ -38,8 +38,6 @@
                                     <div class="wpb_column vc_column_container vc_col-sm-10">
                                        <div class="vc_column-inner vc_custom_1476787670273" style="padding: 20px !important;">
                                           <div class="wpb_wrapper" >
-                                             <p style="font-size: 60px;color: #2a2a2a;line-height: 1;text-align: left;font-family:Montserrat;font-weight:700;font-style:normal; max-width: 100%" class="vc_custom_heading">Welcome to<br>
-                                             </p>
 
                                               <p style="font-size: 60px;color: #2a2a2a;line-height: 1;text-align: left;font-family:Montserrat;font-weight:700;font-style:normal" class="vc_custom_heading">
                                                 <span style="color: red;">F</span>ap <span style="color: red; font-size: 75px;">NOT</span> <span style="color: red;">B</span>ad 
